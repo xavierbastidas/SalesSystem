@@ -1,2 +1,3 @@
 # SalesSystem
-Sales system developed with FastApi and Angular.
+RUN API npm run dev 
+RUN FRONTEND ng s 
