@@ -19,10 +19,10 @@ def get_customers(db:Session=Depends(get_db)):
           return {"error": ex.args.__str__()}
 
 @router.post("/",status_code=status.HTTP_201_CREATED)
-def create_customers(customer:Customer,db:Session=Depends(get_db)):
+async def create_customers(customer:Customer,db:Session=Depends(get_db)):
      try:
         new_customer = Cliente(**customer.model_dump())
-        new_customer.fechaRegistro = return_server_time()
+        new_customer.fechaRegistro = await return_server_time()
         db.add(new_customer)
         db.commit()
         db.refresh(new_customer)

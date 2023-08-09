@@ -22,7 +22,6 @@ def create_details(detail:Detail,db:Session=Depends(get_db)):
      try:
         values = create_values_detail(detail,db)
         conn.execute(insert_detail,values)
-        conn.commit()
         return return_lasted_detail(db)
      except HTTPException as ex:
          return {"error": ex.args.__str__()}
