@@ -1,7 +1,5 @@
 node_modules/
 .env
-Frontend/.angular/cache/15.0.2/angular-webpack/f812186f5c8f56aca0d970a67f25929915a5c57b/0.pack
-Frontend/.angular/
 __pycache__/
 assets/
 
