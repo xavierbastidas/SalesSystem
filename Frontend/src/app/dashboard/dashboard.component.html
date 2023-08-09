@@ -1,0 +1,419 @@
+<div class="container w-full text-center h-full flex flex-column justify-content-center align-content-center mt-2 px-2">
+   
+    <div name="Header">
+        <h1>Punto de venta</h1>
+        <p-button label="Ventas" icon="pi pi-external-link" (click)="sellsOverlay.toggle($event)"
+        style="margin-left: 613px;"
+    ></p-button>
+        <span style="margin-left: 462px;">{{fecha | date:'dd-MM-yyyy HH:mm'}} </span>  
+    </div>
+   
+
+    <div class="flex justify-content-evenly align-items-end border-1 border-bottom-none border-300 p-2"
+    style="margin-top: 17px;">
+        <div class="flex align-items-center">
+            <p-button label="Cliente" icon="pi pi-search" (click)="clientsOverlay.toggle($event)"></p-button>
+        </div>
+        <div class="flex flex-column justify-content-center">
+            <span>Nombre</span>
+            <input type="text" pInputText name="nombre" [disabled]="true" [(ngModel)]="selectedClient.nombre"
+            size="18"
+            >
+        </div>
+        <div class="flex flex-column justify-content-center">
+            <span>Cédula</span>
+            <input type="text" pInputText name="cedula" [disabled]="true" [(ngModel)]="selectedClient.cedula"
+            size="17"
+            >
+        </div>
+        <div class="flex flex-column justify-content-center">
+            <span>Correo</span>
+            <input type="text" pInputText name="correo" [disabled]="true" [(ngModel)]="selectedClient.correo"
+            size="17"
+            >
+        </div>
+         <div class="flex flex-column justify-content-center">
+            <span>Teléfono</span>
+            <input type="text" pInputText name="telefono" [disabled]="true" [(ngModel)]="selectedClient.telefono"
+            size="20"
+            >
+        </div>
+
+        <div style="text-align: center">
+            <p-dialog
+                header="Cliente"
+                [(visible)]="display"
+                [style]="{width: '40vw'}"
+                [draggable]="false"
+                [resizable]="false">
+                <form  name="AddClient">
+                <input type="text" pInputText name="nombre" [(ngModel)]="newClient.nombre" 
+                placeholder="Nombre" style="margin-bottom:10px" size="26"
+                />
+                <input type="text"  (keypress)="validaNumericos($event)"
+                  pInputText  name="cedula" [(ngModel)]="newClient.cedula" 
+                placeholder="Cédula" style="margin-bottom:10px" size="26 " maxlength="10"
+                
+                />
+                <input type="email"  pInputText name="correo" [(ngModel)]="newClient.correo" 
+                placeholder="Correo" style="margin-bottom:10px"  pattern=".+@globex\.com" size="26"
+                />
+                <input type="text"  (keypress)="validaNumericos($event)"
+                 pInputText name="telefono" [(ngModel)]="newClient.telefono" 
+                placeholder="Teléfono" size="26" maxlength="10"  
+                />
+                <div style="margin-top:20px">
+                    <button pButton pRipple type="button" label="Save" class="p-button-success ml-4" 
+
+                    (click)="addClient(newClient)"
+                    ></button>
+                </div>
+
+            </form>
+                      
+            </p-dialog>
+            <p-button
+                (click)="showDialog()"
+                icon="pi pi-check-square"
+                label="Nuevo">
+            </p-button>
+        </div>
+        
+
+    </div>
+    <div class="flex justify-content-evenly align-items-end mb-4 border-1 border-300 p-2">
+        <div class="flex align-items-center">
+            <p-button label="Producto" icon="pi pi-search" [disabled]='selectedProduct.marca===""'
+                (click)="productsOverlay.toggle($event)"></p-button>
+        </div>
+
+        <div class="flex flex-column justify-content-center">
+            <span>Código</span>
+            <input type="text" pInputText name="idProducto" [disabled]="true"
+                [(ngModel)]="selectedProduct.idProducto"  size="5"
+                
+                >
+        </div>
+
+
+        <div class="flex flex-column justify-content-center">
+            <span>Descripción</span>
+            <input type="text" pInputText name="descripcion" [disabled]="true"
+                [(ngModel)]="selectedProduct.descripcion"  size="15"> 
+        </div>
+
+        <div class="flex flex-column justify-content-center">
+            <span>Marca</span>
+            <input type="text" pInputText name="marca" [disabled]="true"
+                [(ngModel)]="selectedProduct.marca"  size="5"> 
+        </div>
+
+
+        <div class="flex flex-column justify-content-center">
+            <span>Categoría</span>
+            <input type="text" pInputText name="marca" [disabled]="true"
+                [(ngModel)]="selectedProduct.categoria"  size="10">
+        </div>
+
+        <div class="flex flex-column justify-content-center">
+            <span>Stock</span>
+            <input type="text" pInputText name="stock" [disabled]="true"
+                [(ngModel)]="selectedProduct.stock"  size="5">
+        </div> 
+        <div class="flex flex-column justify-content-center">
+            <span>Cantidad</span>
+            <input type="text"
+        (keypress)="validaNumericos($event)"
+        [min]="1"  pInputText name="amount" [(ngModel)]="amount"
+        oninput="typescript: 
+        if (this.value.length > this.maxLength)
+            this.value = this.value.slice(0, this.maxLength);"
+        maxlength = "4"  size="10"
+            >
+        </div>
+        <div class="flex flex-column justify-content-center">
+            <p-button label="Añadir" 
+            icon="pi pi-plus" 
+            (click)="addDetail(selectedProduct)"
+
+            >
+        </p-button>
+        </div>
+
+    </div>
+
+    
+    <div class="flex justify-content-center w-full">
+        <p-table [value]="sellDetail" dataKey="id" class="col-11" [tableStyle]="{'min-width': '50rem'}">
+            <ng-template pTemplate="header">
+                <tr>
+                    <th style="width:10%" id="Códig">Eliminar</th>
+                    <th style="width:10%" id="Códig">Código</th>
+                    <th style="width:20%" id="Descr">Descripción</th>
+                    <th style="width:15%" id="Marca">Marca</th>
+                    <th style="width:10%" id="Preci">Categoria</th>
+                    <th style="width:15%" id="Categ">Precio</th>
+                    <th style="width:10%" id="Canti">Cantidad</th>
+                    <th style="width:15%" id="Total">Total</th>
+                </tr>
+            </ng-template>
+            <ng-template pTemplate="body" let-detail>
+                <tr>
+                    <td>
+                        <button pButton pRipple type="button" icon="pi pi-times" class="p-button-rounded p-button-danger p-button-text" 
+                        (click)="removeProduct(detail.idProducto)"></button>
+                    </td>
+                    <td>
+                        <span> {{detail.idProducto}}</span>
+                    </td>
+                    <td>
+                        <span>{{detail.descripcionProducto}}</span>
+                    </td>
+                    <td>
+                        <span>{{detail.marcaProducto}}</span>
+                    </td>
+                    <td>
+                        <span>{{detail.categoriaProducto}}</span>
+                    </td>
+                    <td>
+                        <span>{{detail.precio | currency: 'USD'}}</span>
+                    </td>
+                    <td pEditableColumn>
+                        <p-cellEditor>
+                            <ng-template pTemplate="input"  >
+                                <input pInputText type="text"  (keypress)="validaNumericos($event)" [(ngModel)]="detail.cantidad" 
+                                oninput="typescript: 
+                              if (this.value.length > this.maxLength)
+                                this.value = this.value.slice(0, this.maxLength);"
+                                 maxlength = "4" 
+                                >
+                            </ng-template>
+                            <ng-template pTemplate="output">
+                                {{detail.cantidad}}
+                            </ng-template>
+                        </p-cellEditor>
+                    </td>
+                    <td>
+                        <span>{{detail.precio * detail.cantidad | currency: 'USD'}}</span>
+                    </td>
+                </tr>
+            </ng-template>
+            <ng-template pTemplate="summary">
+                <div class="flex align-items-center justify-content-end flex-column" [style]="{'margin-left':'990px'}">
+                    <span>Subtotal: {{calculateSubtotal(sellDetail) | currency: 'USD'}}</span>
+                    <span class="ml-3">I.V.A: {{calculateIva(sellDetail) | currency: 'USD'}}</span>
+                    <span class="ml-3">Total: {{calculateTotal(sellDetail) | currency: 'USD'}}</span>
+                    <button pButton pRipple type="button" label="Vender" class="p-button-success ml-4" *ngIf="sellDetail.length !==0 "
+                    (click)="sell(sellDetail,selectedClient )"
+                    ></button>
+                </div>
+            </ng-template>
+        </p-table>
+    </div>
+</div>
+
+<p-overlayPanel #productsOverlay [showCloseIcon]="true" [style]="{width: 'auto'}">
+    <ng-template pTemplate>
+        <p-table [value]="products" selectionMode="single" [(selection)]="selectedProduct"
+            [globalFilterFields]="['marca','descripcion','categoria']" (onRowSelect)="onProductSelect($event)" [paginator]="true"
+            [rows]="5" responsiveLayout="scroll" #dt>
+            <ng-template pTemplate="caption">
+                <div class="table-header flex justify-content-between">
+                    Lista de productos
+                    <span class="p-input-icon-left">
+                        <i class="pi pi-search"></i>
+                        <input pInputText type="text" (input)="applyFilterGlobal($event, 'contains')"
+                            placeholder="Búsqueda" />
+                    </span>
+                </div>
+            </ng-template>
+            <ng-template pTemplate="header">
+                <tr>
+                  
+                    <th pSortableColumn="idProducto" id="idProducto">Código<p-sortIcon field="idProducto"></p-sortIcon>
+                    </th>
+
+                    <th pSortableColumn="marca" id="marca">Marca<p-sortIcon field="marca"></p-sortIcon>
+                    </th>
+                    <th pSortableColumn="descripcion" id="descripcion">Descripción <p-sortIcon field="descripcion">
+                        </p-sortIcon>
+                    </th>
+
+                    <th pSortableColumn="categoria" id="categoria">Categoría<p-sortIcon field="categoria">
+                    </p-sortIcon>
+                </th>
+
+                   
+                    <th pSortableColumn="stock" id="stock">Stock <p-sortIcon field="stock"></p-sortIcon>
+                    </th>
+                    <th pSortableColumn="precio" id="precio">Precio <p-sortIcon field="precio"></p-sortIcon>
+                    </th>
+                </tr>
+            </ng-template>
+            <ng-template pTemplate="body" let-rowData let-product>
+                <tr [pSelectableRow]="rowData">
+                    <td>{{product.idProducto}}</td>
+                    <td>{{product.marca}}</td>
+                    <td>{{product.descripcion}}</td>
+                    <td>{{product.categoria}}</td>
+                    <td>{{product.stock}}</td>
+                    <td>{{product.precio | currency: 'USD'}}</td>
+                </tr>
+            </ng-template>
+        </p-table>
+    </ng-template>
+
+    
+</p-overlayPanel>
+<p-overlayPanel #clientsOverlay [showCloseIcon]="true" [style]="{width: '700px'}">
+    <ng-template pTemplate>
+        <p-table [value]="clients" selectionMode="single" [(selection)]="selectedProduct"
+            [globalFilterFields]="['nombre','cedula']" (onRowSelect)="onClientSelect($event)" [paginator]="true"
+            [rows]="3" responsiveLayout="scroll" #dt2>
+            <ng-template pTemplate="caption">
+                <div class="table-header flex justify-content-between">
+                    Lista de clientes
+                    <span class="p-input-icon-left">
+                        <i class="pi pi-search"></i>
+                        <input pInputText type="text" (input)="applyFilterGlobalClient($event, 'contains')"
+                            placeholder="Búsqueda" />
+                    </span>
+                </div>
+            </ng-template>
+            <ng-template pTemplate="header">
+                <tr>
+                    <th pSortableColumn="cedula" id="cedula">Cédula<p-sortIcon field="cedula"></p-sortIcon>
+                    </th>
+                    <th pSortableColumn="nombre" id="nombre">Nombre <p-sortIcon field="nombre">
+                        </p-sortIcon>
+                    </th>
+                    <th pSortableColumn="correo" id="correo">Correo <p-sortIcon field="correo"></p-sortIcon>
+                    </th>
+                    <th pSortableColumn="telefono" id="telefono">Teléfono <p-sortIcon field="telefono"></p-sortIcon>
+                    </th>
+                </tr>
+            </ng-template>
+            <ng-template pTemplate="body" let-rowData let-client>
+                <tr [pSelectableRow]="rowData">
+                    <td>{{client.cedula}}</td>
+                    <td>{{client.nombre}}</td>
+                    <td>{{client.correo}}</td>
+                    <td>{{client.telefono}}</td>
+                </tr>
+            </ng-template>
+        </p-table>
+    </ng-template>
+</p-overlayPanel>
+
+<p-overlayPanel #sellsOverlay [showCloseIcon]="true" [style]="{'width':'auto'  , 'height':'auto'} ">
+    <ng-template pTemplate>
+        <p-table [value]="sales" [globalFilterFields]="['idVenta','cedula','nombre']" dataKey="idVenta"
+            (onRowSelect)="onSellSelect($event)" [paginator]="true" [rows]="5" responsiveLayout="scroll" #dt3>
+            <ng-template pTemplate="caption">
+                <div class="table-header flex justify-content-between">
+                    Lista de Ventas
+                    <span class="p-input-icon-left">
+                        <i class="pi pi-search"></i>
+                        <input pInputText type="text" (input)="applyFilterGlobalSell($event,'contains')"
+                            placeholder="Búsqueda" />
+                    </span>
+                </div>
+            </ng-template>
+            <ng-template pTemplate="header">
+                <tr>
+                    <th style="width: 5rem"></th>
+                    <th pSortableColumn="idVenta" id="idVenta">Número Venta<p-sortIcon field="numero"></p-sortIcon>
+                    </th>
+
+
+                    <th pSortableColumn="cedula" id="cedula">Cédula<p-sortIcon field="nombre">
+                        </p-sortIcon>
+                    </th>
+                    <th pSortableColumn="nombre" id="nombre">Cliente<p-sortIcon field="nombre">
+                        </p-sortIcon>
+                    </th>
+                    <th pSortableColumn="fecha" id="fecha">Fecha Venta<p-sortIcon field="nombre">
+                        </p-sortIcon>
+                    </th>
+
+                    <th pSortableColumn="impuestoTotal" id="I.V.A">I.V.A <p-sortIcon field="numero"></p-sortIcon>
+                    </th>
+                    <th pSortableColumn="Total" id="Total">Total<p-sortIcon field="numero"></p-sortIcon>
+                    </th>
+
+
+                </tr>
+
+
+            </ng-template>
+            <ng-template pTemplate="body" let-rowData let-sell let-expanded="expanded">
+                <tr [pSelectableRow]="rowData">
+                    <td>
+                        <button type="button" pButton pRipple [pRowToggler]="sell"
+                            class="p-button-text p-button-rounded p-button-plain"
+                            [icon]="expanded ? 'pi pi-chevron-down' : 'pi pi-chevron-right'"></button>
+                    </td>
+                    <td>{{sell.idVenta}}</td>
+                    <td>{{sell.cedula}}</td>
+                    <td>{{sell.nombre}}</td>
+                    <td>{{sell.fechaRegistro |date:'dd/MM/yyyy HH:mm'}}</td>
+                    <td>{{sell.impuestoTotal | currency: 'USD'}}</td>
+                    <td>{{sell.Total| currency: 'USD'}}</td>
+                </tr>
+            </ng-template>
+            <ng-template pTemplate="rowexpansion" let-sell>
+                <tr>
+                    <td colspan="7">
+                        <div class="p-3">
+                            <p-table [value]="sell.detalles" dataKey="idVenta">
+                                <ng-template pTemplate="header">
+                                    <div>
+                                    <h3>FACTURA      |      00{{sell.idVenta}}</h3>
+                                    <td>Cliente : {{sell.nombre}}</td>
+                                    <div>
+                                    <td>RUC/C.I :{{sell.cedula}}          Telf :{{sell.telefono}}</td>
+                                    <td></td>
+                                    <td></td>
+                                    </div>
+                                    <td>Fecha :{{sell.fechaRegistro |date:"dd/MM/yyyy"}}</td>
+                                    </div>
+                                    <tr>
+                                        <th >Cantidad <p-sortIcon field="date"></p-sortIcon></th>
+                                        <th >Descripción </th>
+                                        <th >Precio <p-sortIcon field="amount"></p-sortIcon></th>
+                                        <th >Total <p-sortIcon field="status"></p-sortIcon></th>
+                                    </tr>
+                                </ng-template>
+                                <ng-template pTemplate="body"  let-detail>
+                                    <tr>
+                                        <td>{{detail.cantidad}}</td>
+                                        <td>{{detail.descripcionProducto}}</td>
+                                        <td>{{detail.precio | currency:'USD'}}</td>
+                                        <td>{{detail.total | currency:'USD'}}</td>
+                                    </tr>
+                                </ng-template>
+                                 <ng-template pTemplate="summary">
+                                    <div class="flex align-items-center justify-content-end flex-column" [style]="{'margin-left':'650px'}">
+                                        <span >Subtotal: {{sell.subTotal | currency: 'USD'}}</span>
+                                        <span class="m1-3">I.V.A: {{sell.impuestoTotal | currency: 'USD'}}</span>
+                                        <span class="m1-3">Total: {{sell.Total | currency: 'USD'}}</span>
+                                    </div>
+                                </ng-template>
+                           
+                                <ng-template pTemplate="emptymessage">
+                                    <tr>
+                                        <td colspan="6">No hay detalles.</td>
+                                    </tr>
+
+                                        
+                                </ng-template>
+                            </p-table>
+                        </div>
+                    </td>
+                </tr>
+            </ng-template>
+        </p-table>
+    </ng-template>
+</p-overlayPanel>
+
+
