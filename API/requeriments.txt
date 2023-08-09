@@ -1,0 +1,7 @@
+dotenv
+fastapi
+uvicorn
+ntplib
+
+
+
