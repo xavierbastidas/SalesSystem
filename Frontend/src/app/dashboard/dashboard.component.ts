@@ -126,10 +126,8 @@ export class DashboardComponent implements OnInit {
 
    getAllSales() {
      this.api.getSales().subscribe(data => {
-      console.log(data)
        data.forEach(x=>{
          this.api.getDetailsId(x.idVenta!).subscribe(datad=>{
-           console.log(datad)
            x.detalles=datad
          })
        })
@@ -291,7 +289,6 @@ validardetail(details:Detail[], products:Product[]):boolean{
                   this.getAllProducts()
                 })
               })
-              this.getAllSales()
               this.toastService.showSuccess('Éxito', 'Venta generada')
               this.getAllSales()
             },error=>{

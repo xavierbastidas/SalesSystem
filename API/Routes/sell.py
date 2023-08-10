@@ -19,10 +19,10 @@ def get_sell(db:Session=Depends(get_db)):
           return {"error":ex.args.__str__()}
 
 @router.post("/sell",status_code=status.HTTP_201_CREATED)
-async def create_sell(sell:Sell,db:Session=Depends(get_db)):
+def create_sell(sell:Sell,db:Session=Depends(get_db)):
      try:
         new_sell = Venta(**sell.model_dump())
-        new_sell.fechaRegistro = await return_server_time()
+        new_sell.fechaRegistro = return_server_time()
         db.add(new_sell)
         db.commit()
         db.refresh(new_sell)
