@@ -1,3 +1,3 @@
 # SalesSystem
-RUN API npm run dev 
+RUN API uvicorn main:app --reload
 RUN FRONTEND ng s 
